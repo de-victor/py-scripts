@@ -9,7 +9,7 @@ def constroi_tab(n,m):
 def gerar_field(field, index):
     bomba = gerar_bomba()
     field['lista'].append(bomba)
-    field['indexes'].append(index)
+    field['indexes'].append(index) if bomba == '*' else ''
     field['qtd_bomba'] += 1 if bomba == '*' else 0
 
     return field
@@ -31,20 +31,18 @@ def print_tab(tab, jogadas):
     cont = 0
     explodiu = False
     while cont < len(tab) and not explodiu:
-        if len(jogadas) == 0:
-            for index, x in enumerate(tab[cont]['lista']):
-                print('[{}-{}]'.format(cont, index), end='')
-        else:
-            for index, x in enumerate(tab[cont]['lista']):
-                pos = [cont, index]
-                if pos in jogadas:
-                    if x == '*':
-                        explodiu = True
-                        break
-                    else:
-                        print('[ - ]'.format(cont, index), end='')
+
+        for index, x in enumerate(tab[cont]['lista']):
+            pos = [cont, index]
+            if pos in jogadas:
+                if x == '*':
+                    explodiu = True
+                    break
                 else:
-                    print('[{}-{}]'.format(cont, index), end='')
+                    print('[ - ]'.format(cont, index), end='')
+            else:
+                print('[{}-{}]'.format(cont, index), end='')
+
         if explodiu:
             print('Explodiu, fim de jogo')
             break
@@ -66,6 +64,8 @@ if __name__ == '__main__':
 
         if len(pos) == 2:
             pos = list(map(int, pos))
-            jogadas.append(pos)
-            if print_tab(tab, jogadas):
-                break
+            if pos in jogadas:
+                print('voce ja fez essa jogada!!!')
+            else:
+                jogadas.append(pos)
+                jogando = not print_tab(tab, jogadas)
